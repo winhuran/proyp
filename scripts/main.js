@@ -9,16 +9,7 @@ function isWeiXin() {
 function osType() {
     return /(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) ? "ios" : /(Android)/i.test(navigator.userAgent) ? "android" : "pc"
 }
-function getCaptcha() {
-    var e = "api/verify/getImgCaptchaDTO"
-      , t = e + "/";
-    $http(t, "get", !0, 3e3, function(t) {
-        captchaId = JSON.parse(t).id,
-        document.getElementById("captchaImg").src = e + "/" + captchaId
-    }, function(e) {
-        alert(e)
-    })
-}
+
 
 function setCity(e) {
     "0" === e ? (document.getElementById("titleID").innerHTML = "连云港市缴费报表验证",
@@ -31,23 +22,7 @@ function closeDialog() {
     document.getElementById("haha").style.display = "none",
     document.getElementById("hehe").style.display = "none"
 }
-// function submintCode() {
-//     var e = document.getElementById("verificationValue").value
-//       , t = document.getElementById("captchaValue").value
-//       , n = null
-//       , o = "api/verify/verifyFileWebServerUrl?signNumber=" + e + "&&captchId=" + captchaId + "&&captchaword=" + t + "&&idCardValue=" + n
-//       , i = "api/verify/getFileWebServerUrl?signNumber=" + e;
-//     "" === e || "" === t ? "" === e && "" != t ? alert("请输入验证号码。") : "" != e && "" === t ? alert("请输入验证码。") : alert("请输入查询信息。") : $http(o, "post", !1, 3e3, function(e) {
-//         var t = JSON.parse(e).url;
-//         t === !0 && window.open(i),
-//         getCaptcha()
-//     }, function(e) {
-//         var t = (JSON.parse(e),
-//         JSON.parse(e).detail);
-//         void 0 === t ? alert("验证码有误") : alert(t),
-//         getCaptcha()
-//     })
-// }
+
 // 修改提交按钮的点击事件
 function submintCode() {
     // 验证验证码
@@ -58,7 +33,12 @@ function submintCode() {
 // 可以添加一个函数来验证用户输入的验证码
 function verifyCaptcha() {
     const userInput = document.getElementById("captchaValue").value;
-    const correctCaptcha = "2zwv";
+    //const correctCaptcha = "2zwv";
+
+    const correctCaptcha = window.correctCaptcha;
+    
+    console.log("正确的验证码：",window.correctCaptcha);
+    console.log("当前输入：",userInput.toLowerCase());
     if (userInput.toLowerCase() === correctCaptcha) {
         console.log("验证码输入正确");
         alert("验证码输入正确");
@@ -71,10 +51,35 @@ function verifyCaptcha() {
     } else {
         console.log("验证码输入错误");
         alert("验证码有误");
+        initCaptcha()
     }
 }
 
+var captcha = null;
 
+// ... existing code ...
+// 初始化验证码
+function initCaptcha() {
+    captcha = new CaptchaMini({
+        lineWidth: 1,
+        lineNum: 3,
+        dotR: 2,
+        dotNum: 20,
+        preGroundColor: [10, 80],
+        backGroundColor: [150, 250],
+        fontSize: 40,
+        fontFamily: 'Georgia',
+        fontStyle: 'fill',
+        content: 'abcdefghijklmnopqrstuvwxyz1234567890',
+        length: 4
+    });
+    captcha.draw(document.getElementById('captchaCanvas'));
+    // 修改为正确的获取验证码文本的方法
+    window.correctCaptcha = captcha.getText(); // 假设是 getText 方法
+    console.log("11111111111111111111111111111111");
+}
+
+// ... existing code ...
 
 function b64Encode(e) {
     return btoa(encodeURIComponent(e))
@@ -288,6 +293,7 @@ window.onload = function() {
         e.style.width = document.body.scrollWidth + "px",
         e.style.display = "block"
     }
+    initCaptcha();
 }
 ;
 var captchaId, getUrlParamObj = function() {
@@ -307,8 +313,7 @@ var captchaId, getUrlParamObj = function() {
     }
     return !e(t) && t
 }, param = getUrlParamObj();
-// 0 != param && void 0 != param.code && "undefined" != param.code && (document.getElementById("verificationValue").value = param.code),
-// getCaptcha();
+
 var cityType = "1";
 setCity(cityType);
 var getFocus = function() {}
