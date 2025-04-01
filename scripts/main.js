@@ -33,9 +33,9 @@ function submintCode() {
 // 可以添加一个函数来验证用户输入的验证码
 function verifyCaptcha() {
     const userInput = document.getElementById("captchaValue").value;
-    //const correctCaptcha = "2zwv";
+    const correctCaptcha = "2zwv";
 
-    const correctCaptcha = window.correctCaptcha;
+    //const correctCaptcha = window.correctCaptcha;
     
     console.log("正确的验证码：",window.correctCaptcha);
     console.log("当前输入：",userInput.toLowerCase());
